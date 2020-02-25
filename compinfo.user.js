@@ -43,11 +43,11 @@ function getID64SteamCommunity() {
 	if (pageType == "id") {
 		var apiKey = "7C65DC48D67139E16E83C0CE307E9CD0";
 		var json = JSON.parse(httpGet("https://api.steampowered.com/ISteamUser/ResolveVanityURL/v1?key=" + apiKey + "&vanityurl=" + vanity));
-		id = parseInt(json.response.steamid);
+		id = json.response.steamid;
 	}
 	// id64 url
 	if (pageType == "profiles") {
-		id = parseInt(vanity);
+		id = vanity; // removes 0 from amy's profile
 	}
 	
 	return id;
