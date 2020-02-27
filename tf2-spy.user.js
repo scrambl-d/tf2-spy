@@ -36,6 +36,8 @@ class Players {
 			this.players[this.selectedPlayer].etf2l.name = this.data.player.name;
 			this.players[this.selectedPlayer].etf2l.country = this.data.player.country;
 		}
+		if (this.players[this.selectedPlayer].etf2l.id) return true;
+		else return false;
 	}
 	
 	getSelectedPlayer() {
@@ -90,10 +92,11 @@ function steamCommunity() {
 	var displayLocation = ".profile_header_centered_persona";
 	var id64 = getSteamcommunityID64();
 	players.selectPlayer(id64);
-	players.populateETF2L();
-	var playerInfo = players.getSelectedPlayer();
-	var etf2lLink = "ETF2L: <a href=\"http://etf2l.org/forum/user/" + playerInfo.etf2l.id + "\">" + playerInfo.etf2l.name + " </a>";
-	$(displayLocation).append(etf2lLink);
+	if (players.populateETF2L()) {
+		var playerInfo = players.getSelectedPlayer();
+		var etf2lLink = "ETF2L: <a href=\"http://etf2l.org/forum/user/" + playerInfo.etf2l.id + "\">" + playerInfo.etf2l.name + " </a>";
+		$(displayLocation).append(etf2lLink);
+	}
 }
 
 function getSteamcommunityID64() {
