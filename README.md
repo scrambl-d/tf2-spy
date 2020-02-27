@@ -1,4 +1,4 @@
 # tf2-spy
 ## Userscript to check competitive profiles of steam users
 
-Very early in development. Only outputs to javascript console and only supports reading steam profiles to give limited etf2l info (currently)
+Very early in development. Currently only produces an ETF2L link on steam profiles.
