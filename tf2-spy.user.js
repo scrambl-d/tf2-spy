@@ -13,8 +13,6 @@
 // @grant		GM.setValue
 // ==/UserScript==
 
-var domain = "";
-
 class Players {
 	constructor() {
 		(async () => {
@@ -40,8 +38,8 @@ class Players {
 		}
 	}
 	
-	logData() {
-		console.log(this.players[this.selectedPlayer]);
+	getSelectedPlayer() {
+		return this.players[this.selectedPlayer];
 	}
 }
 
@@ -75,15 +73,10 @@ players = new Players()
 
 switch(document.location.hostname) {
 	case "steamcommunity.com":
-		domain = "steamcommunity";
-		var id64 = getSteamcommunityID64();
-		players.selectPlayer(id64);
-		players.populateETF2L();
-		players.logData();
+		steamCommunity();
 		break;
 	case "logs.tf":
 		domain = "logs.tf";
-		//htmlNameClass = "dropdown-toggle";
 		break;
 	case "tf2center.com":
 		domain = "tf2center";
@@ -93,6 +86,16 @@ switch(document.location.hostname) {
 		console.log("domain not in switch");
 }
 
+function steamCommunity() {
+	var displayLocation = ".profile_header_centered_persona";
+	var id64 = getSteamcommunityID64();
+	players.selectPlayer(id64);
+	players.populateETF2L();
+	var playerInfo = players.getSelectedPlayer();
+	var etf2lLink = "ETF2L: <a href=\"http://etf2l.org/forum/user/" + playerInfo.etf2l.id + "\">" + playerInfo.etf2l.name + " </a>";
+	$(displayLocation).append(etf2lLink);
+}
+
 function getSteamcommunityID64() {
 	var id = 0;
 	// get steamcommunity.com/profiles/* or /id/* -- vanity uses id, non vanity uses profiles
@@ -100,7 +103,7 @@ function getSteamcommunityID64() {
 	var pageType = document.URL.match(regex)[1];
 	
 	// get the part of the url with the vanity or id64
-	var regex = /(?:^.{4,5}\:\/\/steamcommunity.com\/[a-z]*\/)(.*)(?:\/$)/i;
+	var regex = /(?:^.{4,5}\:\/\/steamcommunity.com\/[a-z]*\/)(.*)(?:\/?$)/i;
 	var vanity = document.URL.match(regex)[1];
 	// vanity url
 	if (pageType == "id") {
