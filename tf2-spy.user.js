@@ -5,6 +5,8 @@
 // @match		*://*.logs.tf/*
 // @match		*://*.tf2center.com/*
 // @namespace	https://github.com/scrambl-d/tf2-spy
+// @version		0.0
+// @updateURL	https://github.com/scrambl-d/tf2-spy/raw/release/tf2-spy.user.js
 // @require		https://code.jquery.com/jquery-3.4.1.min.js
 // @require 	https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @grant		GM_getValue
