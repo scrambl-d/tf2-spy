@@ -94,8 +94,8 @@ function steamCommunity() {
 	players.selectPlayer(id64);
 	if (players.populateETF2L()) {
 		var playerInfo = players.getSelectedPlayer();
-		var etf2lLink = "ETF2L: <a href=\"http://etf2l.org/forum/user/" + playerInfo.etf2l.id + "\">" + playerInfo.etf2l.name + " </a>";
-		$(displayLocation).append(etf2lLink);
+		var etf2lLink = "<span id=\"tf2-spy\">ETF2L: <a href=\"http://etf2l.org/forum/user/" + playerInfo.etf2l.id + "\">" + playerInfo.etf2l.name + " </a></span>";
+		if (!$("#tf2-spy").length) $(displayLocation).append(etf2lLink);
 	}
 }
 
@@ -106,7 +106,7 @@ function getSteamcommunityID64() {
 	var pageType = document.URL.match(regex)[1];
 	
 	// get the part of the url with the vanity or id64
-	var regex = /(?:^.{4,5}\:\/\/steamcommunity.com\/[a-z]*\/)(.*)(?:\/?$)/i;
+	var regex = /(?:^.{4,5}\:\/\/steamcommunity.com\/[a-z]*\/)([^\/]+)/i;
 	var vanity = document.URL.match(regex)[1];
 	// vanity url
 	if (pageType == "id") {
