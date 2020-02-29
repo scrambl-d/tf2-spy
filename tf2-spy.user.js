@@ -1,55 +1,85 @@
 // ==UserScript==
-// @name		TF2 Spy
-// @match		*://*.steamcommunity.com/id/*
-// @match		*://*.steamcommunity.com/profiles/*
-// @match		*://*.logs.tf/*
-// @match		*://*.tf2center.com/*
-// @namespace	https://github.com/scrambl-d/tf2-spy
-// @version		0.0
-// @updateURL	https://github.com/scrambl-d/tf2-spy/raw/release/tf2-spy.user.js
-// @require		https://code.jquery.com/jquery-3.4.1.min.js
-// @require 	https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
-// @grant		GM_getValue
-// @grant		GM.getValue
-// @grant		GM_setValue
-// @grant		GM.setValue
+// @name			TF2 Spy
+// @match			*://*.steamcommunity.com/id/*
+// @match			*://*.steamcommunity.com/profiles/*
+// @match			*://*.logs.tf/*
+// @match			*://*.tf2center.com/*
+// @namespace		https://github.com/scrambl-d/tf2-spy
+// @version			0.0
+// @grant			GM_getValue
+// @grant			GM_setValue
+// @grant			GM_xmlhttpRequest
+// @grant			GM.xmlHttpRequest
+// @grant			GM.getValue
+// @grant			GM.setValue
+// @connect			etf2l.org
+// @updateURL		https://github.com/scrambl-d/tf2-spy/raw/release/tf2-spy.user.js
+// @require			https://code.jquery.com/jquery-3.4.1.min.js
 // ==/UserScript==
+
+// greasemonkey compatibility
+if (typeof GM_xmlhttpRequest === 'undefined' && typeof GM !== 'undefined') {
+	self.GM_getValue = GM.getValue;
+	self.GM_setValue = GM.setValue;
+	self.GM_xmlhttpRequest = GM.xmlHttpRequest;
+}
+
+// stop showing syntax errors for jquery
+var $ = window.jQuery;
 
 class Players {
 	constructor() {
-		(async () => {
-			this.players = JSON.parse(await GM.getValue("cache", "{}")); 
-		})();
+		this.data = {};
 		this.selectedPlayer = null;
+		this.etf2lLookup = true;
 	}
 	
-	selectPlayer(id64) {
-		if (!this.players[id64]) {
-			this.players[id64] = new Player();
+	update(id64, context) {
+		// lookup checks
+		var lookups = 0;
+		var completeLookups = 0;
+		if (etf2lLookup) {
+			++lookups
+			if (this.data[id64].etf2l.id) ++completeLookups;
+		}
+		
+		// if all lookups are complete
+		if (lookups == completeLookups) {
+			this.display(id64,context);
+		}
+	}
+	
+	display(id64,context) {
+		if (context == "steam") {
+			var displayLocation = ".profile_header_centered_persona";
+			var playerInfo = this.data[id64];
+			if (etf2lLookup && playerInfo.etf2l.id) {
+				var etf2lLink = "<span id=\"\tf2-spy\">ETF2L: <a href=\"http://etf2l.org/forum/user/" + playerInfo.etf2l.id + "\">" + playerInfo.etf2l.name + "</a>";
+				if (!$("#tf2-spy").length) $(displayLocation).append(etf2lLink);
+			}
+		}
+	}
+	
+	selectPlayer(id64, context) {
+		if (this.data[id64] === undefined) {
+			this.data[id64] = new Player();
 		}
 		this.selectedPlayer = id64;
-	}
-	
-	populateETF2L() {
-		if (!this.players[this.selectedPlayer].etf2l.id) {
-			this.data = getETF2LData(this.selectedPlayer);
-			
-			this.players[this.selectedPlayer].etf2l.id = this.data.player.id;
-			this.players[this.selectedPlayer].etf2l.name = this.data.player.name;
-			this.players[this.selectedPlayer].etf2l.country = this.data.player.country;
+		if (context == "steam") {
+			if (this.etf2lLookup) {
+				etf2lLookup(id64, context)
+			}
 		}
-		if (this.players[this.selectedPlayer].etf2l.id) return true;
-		else return false;
 	}
 	
 	getSelectedPlayer() {
-		return this.players[this.selectedPlayer];
+		return this.data[this.selectedPlayer];
 	}
 }
 
 class Player {
 	constructor() {
-		this.birth = Date.now();
+		this.timestamp = Date.now();
 		
 		this.etf2l = {
 			id			: "",
@@ -73,69 +103,62 @@ class divInfo {
 	}
 }
 
-players = new Players() 
+var players = new Players() 
 
 switch(document.location.hostname) {
 	case "steamcommunity.com":
-		steamCommunity();
+		resolveSteamVanity("steam");
 		break;
 	case "logs.tf":
-		domain = "logs.tf";
 		break;
 	case "tf2center.com":
-		domain = "tf2center";
 		//htmlNameClass = "name";
 		break;
 	default:
 		console.log("domain not in switch");
 }
 
-function steamCommunity() {
-	var displayLocation = ".profile_header_centered_persona";
-	var id64 = getSteamcommunityID64();
-	players.selectPlayer(id64);
-	if (players.populateETF2L()) {
-		var playerInfo = players.getSelectedPlayer();
-		var etf2lLink = "<span id=\"tf2-spy\">ETF2L: <a href=\"http://etf2l.org/forum/user/" + playerInfo.etf2l.id + "\">" + playerInfo.etf2l.name + " </a></span>";
-		if (!$("#tf2-spy").length) $(displayLocation).append(etf2lLink);
-	}
-}
-
-function getSteamcommunityID64() {
+			// + "<img src=\"http://etf2l.org/images/flags/"
+			// + playerInfo.etf2l.country
+			// + ".gif\"></a></span>";
+			
+function resolveSteamVanity(context) {
 	var id = 0;
-	// get steamcommunity.com/profiles/* or /id/* -- vanity uses id, non vanity uses profiles
 	var regex = /(?:^.{4,5}\:\/\/steamcommunity.com\/)([a-z]*)(?:.*)/i;
 	var pageType = document.URL.match(regex)[1];
+	regex = new RegExp("(?:^.{4,5}\:\/\/steamcommunity.com\/" + pageType + "\/)([^\/]+)", "i");
 	
-	// get the part of the url with the vanity or id64
-	var regex = /(?:^.{4,5}\:\/\/steamcommunity.com\/[a-z]*\/)([^\/]+)/i;
-	var vanity = document.URL.match(regex)[1];
-	// vanity url
 	if (pageType == "id") {
 		var apiKey = "7C65DC48D67139E16E83C0CE307E9CD0";
-		var json = JSON.parse(httpGet("https://api.steampowered.com/ISteamUser/ResolveVanityURL/v1?key=" + apiKey + "&vanityurl=" + vanity));
-		id = json.response.steamid;
+		var vanity = document.URL.match(regex)[1];
+		
+		GM_xmlhttpRequest({
+			method: "GET",
+			url: "https://api.steampowered.com/ISteamUser/ResolveVanityURL/v1?key=" + apiKey + "&vanityurl=" + vanity + "&format=json",
+			onload:function(response) {
+				var data = JSON.parse(response.responseText);
+				players.selectPlayer(data.response.steamid, context);
+			}
+		});
 	}
-	// id64 url
 	if (pageType == "profiles") {
-		id = vanity; // removes 0 from amy's profile
+		players.selectPlayer(document.URL.match(regex)[1], context);
 	}
-	
-	return id;
 }
 
-function getETF2LData(id64) {
-	var data = JSON.parse(httpGet("http://api.etf2l.org/player/" + id64 + ".json"));
-	return data;
+function etf2lLookup(id64, context) {
+	GM_xmlhttpRequest({
+		method: "GET",
+		url: "http://api.etf2l.org/player/" + id64 + ".json",
+		onload: function (response){
+			var data = JSON.parse(response.responseText);
+			if (data.player.id) {
+				players.data[id64].etf2l.id = data.player.id;
+				players.data[id64].etf2l.name = data.player.name;
+				players.data[id64].etf2l.country = data.player.country;
+			}
+			else players[id64.etf2l.id] = 0;
+			players.update(id64, context);
+		}
+	});
 }
-
-function httpGet(theUrl) {
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
-    xmlHttp.send( null );
-    return xmlHttp.responseText;
-}
-
-// todo steam key
-// api key 7C65DC48D67139E16E83C0CE307E9CD0
-// https://api.steampowered.com/ISteamUser/ResolveVanityURL/v1?key=7C65DC48D67139E16E83C0CE307E9CD0&vanityurl=scrambled_ry_link";
