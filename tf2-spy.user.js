@@ -5,7 +5,7 @@
 // @match			*://*.logs.tf/*
 // @match			*://*.tf2center.com/*
 // @namespace		https://github.com/scrambl-d/tf2-spy
-// @version			0.0
+// @version			0.1
 // @grant			GM_getValue
 // @grant			GM_setValue
 // @grant			GM_xmlhttpRequest
