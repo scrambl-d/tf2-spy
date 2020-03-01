@@ -6,7 +6,7 @@
 	// @match			*://*.tf2center.com/*
 	// @connect			etf2l.org
 	// @namespace		https://github.com/scrambl-d/tf2-spy
-	// @version			0.2.1
+	// @version			0.2.2
 	// @grant			GM_getValue
 	// @grant			GM_setValue
 	// @grant			GM_xmlhttpRequest
@@ -45,14 +45,14 @@
 			
 			var boxCss = "";
 			boxCss += "display: none;";
-			boxCss += "background-color: #2b3233;";
+			boxCss += "background-color: #121414;";
 			boxCss += "color:#FFFFFF;";
 			boxCss += "position: relative;";
 			boxCss += "top: -20px;";
 			boxCss += "left: 30px;";
 			boxCss += "padding: 10px 10px 10px 10px;";
 			boxCss += "max-width: 250px;";
-			boxCss += "border: 1px solid #dce7e8;";
+			boxCss += "border: none;";
 			boxCss += "line-height: 15pt;";
 			
 			var box = "";
@@ -154,7 +154,7 @@
 		var id = 0;
 		var regex = /(?:^.{4,5}\:\/\/steamcommunity.com\/)([a-z]*)(?:.*)/i;
 		var pageType = document.URL.match(regex)[1];
-		regex = new RegExp("(?:^.{4,5}\:\/\/steamcommunity.com\/" + pageType + "\/)([^\/]+)", "i");
+		regex = new RegExp("(?:^.{4,5}\:\/\/steamcommunity.com\/" + pageType + "\/)([^\/\?]+)", "i");
 		
 		if (pageType == "id") {
 			var apiKey = "7C65DC48D67139E16E83C0CE307E9CD0";
