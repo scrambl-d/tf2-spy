@@ -4,15 +4,16 @@
 	// @match			*://*.steamcommunity.com/profiles/*
 	// @match			*://*.logs.tf/*
 	// @match			*://*.tf2center.com/*
+	// @connect			etf2l.org
 	// @namespace		https://github.com/scrambl-d/tf2-spy
-	// @version			0.2
-	// @grant			GM_getValuea
+	// @version			0.2.1
+	// @grant			GM_getValue
 	// @grant			GM_setValue
 	// @grant			GM_xmlhttpRequest
 	// @grant			GM.xmlHttpRequest
 	// @grant			GM.getValue
 	// @grant			GM.setValue
-	// @connect			etf2l.org
+
 	// @updateURL		https://github.com/scrambl-d/tf2-spy/raw/release/tf2-spy.user.js
 	// @require			https://code.jquery.com/jquery-3.4.1.min.js
 	// ==/UserScript==
@@ -42,30 +43,30 @@
 
 		display(id64,context) {
 			
-			var boxCss = "\
-			display: none;					\
-			background-color: #000022;	    \
-			color:#FFFFFF;					\
-			position: relative;				\
-			top: -20px;						\
-			left: 30px;						\
-			padding: 10px 10px 10px 10px;	\
-			max-width: 250px;				\
-			";
+			var boxCss = "";
+			boxCss += "display: none;";
+			boxCss += "background-color: #000022;";
+			boxCss += "color:#FFFFFF;";
+			boxCss += "position: relative;";
+			boxCss += "top: -20px;";
+			boxCss += "left: 30px;";
+			boxCss += "padding: 10px 10px 10px 10px;";
+			boxCss += "max-width: 250px;";
+			boxCss += "border: 1px solid white;";
+			boxCss += "line-height: 15pt;";
 			
-			var box = "<span id=\"tf2-spy\">";
-				box += "<a ";
-				box += "href=\"#\"" ;
-				box += "id=\"tf2-spy-link\"" ;
-				box += ">";
-				box += "TF2-Spy";
-				box += "</a>";
-				box += "<div id=\"tf2-spy-box\" style=\"" + boxCss + "\">";
-				box += "TF2-SPY";
-				box += "</div></span>";
-			
+			var box = "";
+			box += "<span id=\"tf2-spy\">";
+			box += "<a ";
+			box += "href=\"#\"" ;
+			box += "id=\"tf2-spy-link\"" ;
+			box += ">";
+			box += "TF2-Spy";
+			box += "</a>";
+			box += "<div id=\"tf2-spy-box\" style=\"" + boxCss + "\">";
+			box += "TF2-SPY";
+			box += "</div></span>";
 
-			
 			var playerInfo = this.data[id64];
 			var boxContent = "";
 			
@@ -77,23 +78,26 @@
 			
 			document.getElementById("tf2-spy-link").addEventListener("click", toggleSpyBox,false);
 			
+			var iconStyle = "max-height:12px;width:auto;verticle-align:bottom;";
+			
 			if (playerInfo.etf2l.id) {
-				boxContent += "<a href=\"http://etf2l.org/forum/user/" + playerInfo.etf2l.id + "\">" + playerInfo.etf2l.name + "</a><br />";
+				boxContent += "<a id=\"etf2llink\" href=\"http://etf2l.org/forum/user/" + playerInfo.etf2l.id + "\">";
+				boxContent += "<img src=\"https://raw.githubusercontent.com/scrambl-d/tf2-spy/release/img/etf2l.ico\" style=\"" + iconStyle + "\" /> ";
+				boxContent += playerInfo.etf2l.name + " <img src=\"https://raw.githubusercontent.com/scrambl-d/tf2-spy/release/img/country/" + playerInfo.etf2l.country + ".gif\" style=\"" + iconStyle + "\" /></a><br />";
 			}
 			
-			if (this.displayLogs) {
-				boxContent += "<a href=\"https://logs.tf/profile/" + id64 + "\">logs.tf</a><br />"
+			if (this.displayLogs && context != "logs") {
+				boxContent += "<a id=\"logslink\" href=\"https://logs.tf/profile/" + id64 + "\"><img src=\"https://github.com/scrambl-d/tf2-spy/raw/release/img/logstf.png\" style=\"" + iconStyle + "\" /> logs.tf </a><br />";
 			}
 			
 			$("#tf2-spy-box").html(boxContent);
-			
 		}
 		
 		selectPlayer(id64, context) {
 			if (this.data[id64] === undefined) {
 				this.data[id64] = new Player();
 			}
-		this.display(id64, context);
+			this.display(id64, context);
 			if (this.displayETF2L) {
 				etf2lLookup(id64, context);
 			}
