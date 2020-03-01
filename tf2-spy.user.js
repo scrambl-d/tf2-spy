@@ -6,7 +6,7 @@
 	// @match			*://*.tf2center.com/*
 	// @connect			etf2l.org
 	// @namespace		https://github.com/scrambl-d/tf2-spy
-	// @version			0.2.2
+	// @version			0.2.3
 	// @grant			GM_getValue
 	// @grant			GM_setValue
 	// @grant			GM_xmlhttpRequest
@@ -43,53 +43,71 @@
 
 		display(id64,context) {
 			
+
+			var playerInfo = this.data[id64];
+			
+			if (context == "steam") {
+				var displayLocation = ".profile_header_centered_persona > .persona_name";
+			}
+			
+			var iconStyle = "max-height:12px;width:auto;verticle-align:bottom;";
+			
+			var boxContent = "<table>";
+			
+			if (playerInfo.etf2l.id) {
+				boxContent += "<tr>";
+					boxContent += "<td>";
+						boxContent += "<a id=\"etf2llink\" href=\"http://etf2l.org/forum/user/" + playerInfo.etf2l.id + "\">";
+						boxContent += "<img src=\"https://raw.githubusercontent.com/scrambl-d/tf2-spy/release/img/etf2l.ico\" style=\"" + iconStyle + "\" /> " + playerInfo.etf2l.name;
+						//boxContent += " <img src=\"https://raw.githubusercontent.com/scrambl-d/tf2-spy/release/img/country/" + playerInfo.etf2l.country + ".gif\" style=\"" + iconStyle + "\" />";
+						boxContent += "</a>";
+					boxContent += "</tr>";
+				boxContent += "</tr>";
+			}
+			
+			if (this.displayLogs && context != "logs") {
+				boxContent += "<tr>";
+					boxContent += "<td>";
+						boxContent += "<a id=\"logslink\" href=\"https://logs.tf/profile/" + id64 + "\"><img src=\"https://github.com/scrambl-d/tf2-spy/raw/release/img/logstf.png\" style=\"" + iconStyle + "\" /> logs.tf </a>";
+					boxContent += "</td>";
+				boxContent += "</tr>";
+			}
+			boxContent += "</table>";
+			
+			var linkCss = "";
+			linkCss += "font-size: 12px";
+			
 			var boxCss = "";
-			boxCss += "display: none;";
-			boxCss += "background-color: #121414;";
-			boxCss += "color:#FFFFFF;";
-			boxCss += "position: relative;";
-			boxCss += "top: -20px;";
+			boxCss += "display: table;";
+			boxCss += "position: absolute;";
+			boxCss += "top: 0;";
 			boxCss += "left: 30px;";
-			boxCss += "padding: 10px 10px 10px 10px;";
-			boxCss += "max-width: 250px;";
+			boxCss += "color:#FFFFFF;";
+			boxCss += "background-color: #121414;";
 			boxCss += "border: none;";
-			boxCss += "line-height: 15pt;";
+			boxCss += "line-height: 10pt;";
+			boxCss += "font-size: 12px;";
+			boxCss += "z-index: 3;";
 			
 			var box = "";
-			box += "<span id=\"tf2-spy\">";
+			box += "<span id=\"tf2-spy\"";
+			box += "style=\"position: relative\"";
+			box += ">";
 			box += "<a ";
-			box += "href=\"#\"" ;
+			box += "href=\"#\"";
 			box += "id=\"tf2-spy-link\"" ;
+			box += "style=\"" + linkCss + "\"";
 			box += ">";
 			box += "TF2-Spy";
 			box += "</a>";
 			box += "<div id=\"tf2-spy-box\" style=\"" + boxCss + "\">";
 			box += "TF2-SPY";
 			box += "</div></span>";
-
-			var playerInfo = this.data[id64];
-			var boxContent = "";
-			
-			if (context == "steam") {
-				var displayLocation = ".profile_header_centered_persona";
-			}
 			
 			if (!$("#tf2-spy").length) $(displayLocation).append(box); 
 			
 			document.getElementById("tf2-spy-link").addEventListener("click", toggleSpyBox,false);
-			
-			var iconStyle = "max-height:12px;width:auto;verticle-align:bottom;";
-			
-			if (playerInfo.etf2l.id) {
-				boxContent += "<a id=\"etf2llink\" href=\"http://etf2l.org/forum/user/" + playerInfo.etf2l.id + "\">";
-				boxContent += "<img src=\"https://raw.githubusercontent.com/scrambl-d/tf2-spy/release/img/etf2l.ico\" style=\"" + iconStyle + "\" /> " + playerInfo.etf2l.name;
-				//boxContent += " <img src=\"https://raw.githubusercontent.com/scrambl-d/tf2-spy/release/img/country/" + playerInfo.etf2l.country + ".gif\" style=\"" + iconStyle + "\" />";
-				boxContent += "</a><br />";
-			}
-			
-			if (this.displayLogs && context != "logs") {
-				boxContent += "<a id=\"logslink\" href=\"https://logs.tf/profile/" + id64 + "\"><img src=\"https://github.com/scrambl-d/tf2-spy/raw/release/img/logstf.png\" style=\"" + iconStyle + "\" /> logs.tf </a><br />";
-			}
+
 			
 			$("#tf2-spy-box").html(boxContent);
 		}
