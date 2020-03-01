@@ -45,14 +45,14 @@
 			
 			var boxCss = "";
 			boxCss += "display: none;";
-			boxCss += "background-color: #000022;";
+			boxCss += "background-color: #2b3233;";
 			boxCss += "color:#FFFFFF;";
 			boxCss += "position: relative;";
 			boxCss += "top: -20px;";
 			boxCss += "left: 30px;";
 			boxCss += "padding: 10px 10px 10px 10px;";
 			boxCss += "max-width: 250px;";
-			boxCss += "border: 1px solid white;";
+			boxCss += "border: 1px solid #dce7e8;";
 			boxCss += "line-height: 15pt;";
 			
 			var box = "";
@@ -82,8 +82,9 @@
 			
 			if (playerInfo.etf2l.id) {
 				boxContent += "<a id=\"etf2llink\" href=\"http://etf2l.org/forum/user/" + playerInfo.etf2l.id + "\">";
-				boxContent += "<img src=\"https://raw.githubusercontent.com/scrambl-d/tf2-spy/release/img/etf2l.ico\" style=\"" + iconStyle + "\" /> ";
-				boxContent += playerInfo.etf2l.name + " <img src=\"https://raw.githubusercontent.com/scrambl-d/tf2-spy/release/img/country/" + playerInfo.etf2l.country + ".gif\" style=\"" + iconStyle + "\" /></a><br />";
+				boxContent += "<img src=\"https://raw.githubusercontent.com/scrambl-d/tf2-spy/release/img/etf2l.ico\" style=\"" + iconStyle + "\" /> " + playerInfo.etf2l.name;
+				//boxContent += " <img src=\"https://raw.githubusercontent.com/scrambl-d/tf2-spy/release/img/country/" + playerInfo.etf2l.country + ".gif\" style=\"" + iconStyle + "\" />";
+				boxContent += "</a><br />";
 			}
 			
 			if (this.displayLogs && context != "logs") {
