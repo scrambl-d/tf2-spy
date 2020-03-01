@@ -6,7 +6,7 @@
 	// @match			*://*.tf2center.com/*
 	// @connect			etf2l.org
 	// @namespace		https://github.com/scrambl-d/tf2-spy
-	// @version			0.3
+	// @version			0.3.1
 	// @grant			GM_getValue
 	// @grant			GM_setValue
 	// @grant			GM_xmlhttpRequest
@@ -98,7 +98,7 @@
 			box += "id=\"tf2-spy-link\"" ;
 			box += "style=\"" + linkCss + "\"";
 			box += ">";
-			box += "<img src=\"https://github.com/scrambl-d/tf2-spy/raw/release/img/spycrab.png\" style=\"" + iconStyle + "\" />";
+			box += "<img src=\"https://github.com/scrambl-d/tf2-spy/raw/release/img/spycrab.png\" style=\"max-height:24px;width:auto;verticle-align:bottom;\" />";
 			box += "</a>";
 			box += "<div id=\"tf2-spy-box\" style=\"" + boxCss + "\">";
 			box += "TF2-SPY";
