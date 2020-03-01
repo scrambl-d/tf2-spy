@@ -98,7 +98,7 @@
 			box += "id=\"tf2-spy-link\"" ;
 			box += "style=\"" + linkCss + "\"";
 			box += ">";
-			box += "TF2-Spy";
+			box += "<img src=\"https://github.com/scrambl-d/tf2-spy/raw/release/img/spycrab.png\" style=\"" + iconStyle + "\" />";
 			box += "</a>";
 			box += "<div id=\"tf2-spy-box\" style=\"" + boxCss + "\">";
 			box += "TF2-SPY";
