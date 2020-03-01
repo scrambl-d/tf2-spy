@@ -6,7 +6,7 @@
 	// @match			*://*.tf2center.com/*
 	// @connect			etf2l.org
 	// @namespace		https://github.com/scrambl-d/tf2-spy
-	// @version			0.2.3
+	// @version			0.3
 	// @grant			GM_getValue
 	// @grant			GM_setValue
 	// @grant			GM_xmlhttpRequest
@@ -107,9 +107,10 @@
 			if (!$("#tf2-spy").length) $(displayLocation).append(box); 
 			
 			document.getElementById("tf2-spy-link").addEventListener("click", toggleSpyBox,false);
-
 			
 			$("#tf2-spy-box").html(boxContent);
+			
+			$("#tf2-spy-box").hide();
 		}
 		
 		selectPlayer(id64, context) {
