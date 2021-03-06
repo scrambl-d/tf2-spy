@@ -50,30 +50,36 @@ class Players {
     var iconStyle = "max-height:12px;width:auto;verticle-align:bottom;";
 
     var boxContent = "<table>";
-	
-	boxContent += "<tr>";
-	boxContent += "<td>";
-	boxContent += "<img src=\"https://raw.githubusercontent.com/scrambl-d/tf2-spy/release/img/etf2l.ico\" style=\"" + iconStyle + "\" /> ";
-	boxContent += "<span class=\"etf2lrow\">";
-	if (playerInfo.etf2l.id) {
-		boxContent += "<a href=\"https://etf2l.org/forum/user/" + playerInfo.etf2l.id + "\">";
-		boxContent += playerInfo.etf2l.name;
-		boxContent += "</a>";
-	}
-	else {
-		boxContent += "Loading...";
-	}
-	boxContent += "</span>";
-	boxContent += "</td>";
-	boxContent += "</tr>";
-	boxContent += "<tr>";
-	boxContent += "<td>";
-	boxContent += "<img src=\"https://github.com/scrambl-d/tf2-spy/raw/release/img/logstf.png\" style=\"" + iconStyle + "\" /> ";
-	boxContent += "<span class=\"logsrow\">";
-	boxContent += "<a href=\"https://logs.tf/profile/" + id64 + "\">logs.tf</a>";
-	boxContent += "</span>";
-	boxContent += "</tr>";
-	boxContent += "</td>";
+
+    boxContent += "<tr>";
+    boxContent += "<td>";
+    boxContent +=
+      '<img src="https://raw.githubusercontent.com/scrambl-d/tf2-spy/release/img/etf2l.ico" style="' +
+      iconStyle +
+      '" /> ';
+    boxContent += '<span class="etf2lrow">';
+    if (playerInfo.etf2l.id) {
+      boxContent +=
+        '<a href="https://etf2l.org/forum/user/' + playerInfo.etf2l.id + '">';
+      boxContent += playerInfo.etf2l.name;
+      boxContent += "</a>";
+    } else {
+      boxContent += "Loading...";
+    }
+    boxContent += "</span>";
+    boxContent += "</td>";
+    boxContent += "</tr>";
+    boxContent += "<tr>";
+    boxContent += "<td>";
+    boxContent +=
+      '<img src="https://github.com/scrambl-d/tf2-spy/raw/release/img/logstf.png" style="' +
+      iconStyle +
+      '" /> ';
+    boxContent += '<span class="logsrow">';
+    boxContent += '<a href="https://logs.tf/profile/' + id64 + '">logs.tf</a>';
+    boxContent += "</span>";
+    boxContent += "</tr>";
+    boxContent += "</td>";
     boxContent += "</table>";
 
     var linkCss = "";
@@ -118,14 +124,12 @@ class Players {
     $("#tf2-spy-box").hide();
   }
 
-  selectPlayer(id64, context) {
+  selectPlayer(id64, number = 0) {
     if (this.data[id64] === undefined) {
       this.data[id64] = new Player();
     }
-    this.display(id64, context);
-    if (this.displayETF2L) {
-      etf2lLookup(id64, context);
-    }
+    addLogsLink(id64, number);
+    lookupETF2L(id64, number);
   }
 }
 
@@ -174,7 +178,7 @@ switch (document.location.hostname) {
 // + ".gif\"></a></span>";
 
 function steamCommunity() {
-  var context = "steam";
+  makeBox(".profile_header_centered_persona > .persona_name");
   var id = 0;
   var regex = /(?:^.{4,5}\:\/\/steamcommunity.com\/)([a-z]*)(?:.*)/i;
   var pageType = document.URL.match(regex)[1];
@@ -197,27 +201,133 @@ function steamCommunity() {
         "&format=json",
       onload: function (response) {
         var data = JSON.parse(response.responseText);
-        players.selectPlayer(data.response.steamid, context);
+        players.selectPlayer(data.response.steamid);
       },
     });
   }
   if (pageType == "profiles") {
-    players.selectPlayer(document.URL.match(regex)[1], context);
+    players.selectPlayer(document.URL.match(regex)[1]);
   }
 }
 
-function etf2lLookup(id64, context) {
+function makeBox(location, number = 0) {
+  var iconStyle = "max-height:12px;width:auto;verticle-align:bottom;";
+
+  var boxContent = "<table>";
+
+  boxContent += "<tr>";
+  boxContent += "<td>";
+  boxContent +=
+    '<img src="https://raw.githubusercontent.com/scrambl-d/tf2-spy/release/img/etf2l.ico" style="' +
+    iconStyle +
+    '" /> ';
+  boxContent += '<span class="etf2lrow">';
+  boxContent += "Loading...";
+  boxContent += "</span>";
+  boxContent += "</td>";
+  boxContent += "</tr>";
+  boxContent += "<tr>";
+  boxContent += "<td>";
+  boxContent +=
+    '<img src="https://github.com/scrambl-d/tf2-spy/raw/release/img/logstf.png" style="' +
+    iconStyle +
+    '" /> ';
+  boxContent += '<span class="logsrow">';
+  boxContent += "Loading...";
+  boxContent += "</span>";
+  boxContent += "</tr>";
+  boxContent += "</td>";
+  boxContent += "</table>";
+
+  var linkCss = "";
+  linkCss += "font-size: 12px";
+
+  var boxCss = "";
+  boxCss += "display: table;";
+  boxCss += "position: absolute;";
+  boxCss += "top: 0;";
+  boxCss += "left: 30px;";
+  boxCss += "color:#FFFFFF;";
+  boxCss += "background-color: #121414;";
+  boxCss += "border: none;";
+  boxCss += "line-height: 10pt;";
+  boxCss += "font-size: 12px;";
+  boxCss += "z-index: 3;";
+
+  var box = "";
+  box += '<span class="tf2-spy box' + number + '"';
+  box += 'style="position: relative"';
+  box += ">";
+  box += "<a ";
+  box += 'href="#"';
+  box += 'class="tf2-spy-link"';
+  box += 'style="' + linkCss + '"';
+  box += ">";
+  box +=
+    '<img src="https://github.com/scrambl-d/tf2-spy/raw/release/img/spycrab.png" style="max-height:24px;width:auto;verticle-align:bottom;" />';
+  box += "</a>";
+  box += '<div class="tf2-spy-box" style="' + boxCss + '">';
+  box += boxContent;
+  box += "</div></span>";
+
+  $(location).append(box);
+
+  $(".box" + number + " .tf2-spy-link").on("click", function () {
+    $(".box" + number + " .tf2-spy-box").toggle();
+  });
+
+  $(".box" + number + " .tf2-spy-box").hide();
+}
+
+function addLogsLink(id, number) {
+  $(".box" + number + " .logsrow").html(
+    '<a href="https://logs.tf/profile/' + id + '">logs.tf</a>'
+  );
+  getLogsNumber(id, number);
+}
+
+function getLogsNumber(id, number) {
+  GM_xmlhttpRequest({
+    method: "GET",
+    url: "https://logs.tf/api/v1/log?player=" + id,
+    onload: function (response) {
+      var data = JSON.parse(response.responseText);
+      $(".box" + number + " .logsrow").append(
+        ' <span style="opacity: 0.5">' + data.total + " logs</span>"
+      );
+    },
+  });
+}
+
+function lookupETF2L(id64, number) {
   GM_xmlhttpRequest({
     method: "GET",
     url: "http://api.etf2l.org/player/" + id64 + ".json",
     onload: function (response) {
-      var data = JSON.parse(response.responseText);
-      if (data.player.id) {
-        players.data[id64].etf2l.id = data.player.id;
+	  try {
+		var data = JSON.parse(response.responseText);
+		players.data[id64].etf2l.id = data.player.id;
         players.data[id64].etf2l.name = data.player.name;
-        players.data[id64].etf2l.country = data.player.country;
-      } else players.data[id64].etf2l.id = 0;
-      players.display(id64, context);
+        $(".box" + number + " .etf2lrow").html(
+          '<a href="https://etf2l.org/forum/user/' +
+            players.data[id64].etf2l.id +
+            '">' +
+            players.data[id64].etf2l.name +
+            "</a>"
+        );
+	  }
+	  catch (e) {
+		$(".box" + number + " .etf2lrow").html("No profile");
+	  }
+    },
+    onerror: function (response) {
+      $(".box" + number + " .etf2lrow").html("No profile");
     },
   });
+}
+
+function addETF2LLink(name, id, number) {
+  $(".box" + number + " .etf2lrow").html(
+    '<a href="https://etf2l.org/user/' + id + '">' + name + "</a>"
+  );
 }
