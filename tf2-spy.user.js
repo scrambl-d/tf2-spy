@@ -6,7 +6,7 @@
 // @match			*://*.tf2center.com/*
 // @connect			etf2l.org
 // @namespace		https://github.com/scrambl-d/tf2-spy
-// @version			0.4
+// @version			0.4.1
 // @grant			GM_getValue
 // @grant			GM_setValue
 // @grant			GM_xmlhttpRequest
@@ -129,62 +129,64 @@ function steamCommunity() {
 function makeBox(location, number = 0) {
   var iconStyle = "max-height:12px;width:auto;verticle-align:bottom;";
 
-  var boxContent = "<table>";
-
-  boxContent += "<tr>";
-  boxContent += "<td>";
-  boxContent +=
+  var boxContent =
+    "<table>" +
+    "<tr>" +
+    "<td>" +
     '<img src="https://raw.githubusercontent.com/scrambl-d/tf2-spy/release/img/etf2l.ico" style="' +
     iconStyle +
-    '" /> ';
-  boxContent += '<span class="etf2lrow">';
-  boxContent += "Loading...";
-  boxContent += "</span>";
-  boxContent += "</td>";
-  boxContent += "</tr>";
-  boxContent += "<tr>";
-  boxContent += "<td>";
-  boxContent +=
+    '" /> ' +
+    '<span class="etf2lrow">' +
+    "Loading..." +
+    "</span>" +
+    "</td>" +
+    "</tr>" +
+    "<tr>" +
+    "<td>" +
     '<img src="https://github.com/scrambl-d/tf2-spy/raw/release/img/logstf.png" style="' +
     iconStyle +
-    '" /> ';
-  boxContent += '<span class="logsrow">';
-  boxContent += "Loading...";
-  boxContent += "</span>";
-  boxContent += "</tr>";
-  boxContent += "</td>";
-  boxContent += "</table>";
+    '" /> ' +
+    '<span class="logsrow">' +
+    "Loading..." +
+    "</span>" +
+    "</tr>" +
+    "</td>" +
+    "</table>";
 
-  var linkCss = "";
-  linkCss += "font-size: 12px";
+  var linkCss = "font-size: 12px";
 
-  var boxCss = "";
-  boxCss += "display: table;";
-  boxCss += "position: absolute;";
-  boxCss += "top: 0;";
-  boxCss += "left: 30px;";
-  boxCss += "color:#FFFFFF;";
-  boxCss += "background-color: #121414;";
-  boxCss += "border: none;";
-  boxCss += "line-height: 10pt;";
-  boxCss += "font-size: 12px;";
-  boxCss += "z-index: 3;";
+  var boxCss =
+  "display: table;" +
+  "position: absolute;" +
+  "top: 0;" +
+  "left: 30px;" +
+  "color:#FFFFFF;" +
+  "background-color: #121414;" +
+  "border: none;" +
+  "line-height: 10pt;" +
+  "font-size: 12px;" +
+  "z-index: 3;";
 
-  var box = "";
-  box += '<span class="tf2-spy box' + number + '"';
-  box += 'style="position: relative"';
-  box += ">";
-  box += "<a ";
-  box += 'href="#"';
-  box += 'class="tf2-spy-link"';
-  box += 'style="' + linkCss + '"';
-  box += ">";
-  box +=
-    '<img src="https://github.com/scrambl-d/tf2-spy/raw/release/img/spycrab.png" style="max-height:24px;width:auto;verticle-align:bottom;" />';
-  box += "</a>";
-  box += '<div class="tf2-spy-box" style="' + boxCss + '">';
-  box += boxContent;
-  box += "</div></span>";
+  var box =
+    '<span class="tf2-spy box' +
+    number +
+    '"' +
+    'style="position: relative"' +
+    ">" +
+    "<a " +
+    'href="#"' +
+    'class="tf2-spy-link"' +
+    'style="' +
+    linkCss +
+    '"' +
+    ">" +
+    '<img src="https://github.com/scrambl-d/tf2-spy/raw/release/img/spycrab.png" style="max-height:24px;width:auto;verticle-align:bottom;" />' +
+    "</a>" +
+    '<div class="tf2-spy-box" style="' +
+    boxCss +
+    '">' +
+    boxContent +
+    "</div></span>";
 
   $(location).append(box);
 
@@ -220,9 +222,9 @@ function lookupETF2L(id64, number) {
     method: "GET",
     url: "http://api.etf2l.org/player/" + id64 + ".json",
     onload: function (response) {
-	  try {
-		var data = JSON.parse(response.responseText);
-		players.data[id64].etf2l.id = data.player.id;
+      try {
+        var data = JSON.parse(response.responseText);
+        players.data[id64].etf2l.id = data.player.id;
         players.data[id64].etf2l.name = data.player.name;
         $(".box" + number + " .etf2lrow").html(
           '<a href="https://etf2l.org/forum/user/' +
@@ -231,10 +233,9 @@ function lookupETF2L(id64, number) {
             players.data[id64].etf2l.name +
             "</a>"
         );
-	  }
-	  catch (e) {
-		$(".box" + number + " .etf2lrow").html("No profile");
-	  }
+      } catch (e) {
+        $(".box" + number + " .etf2lrow").html("No profile");
+      }
     },
     onerror: function (response) {
       $(".box" + number + " .etf2lrow").html("No profile");
