@@ -6,7 +6,7 @@
 // @match			*://*.tf2center.com/*
 // @connect			etf2l.org
 // @namespace		https://github.com/scrambl-d/tf2-spy
-// @version			0.4.1
+// @version			0.5
 // @grant			GM_getValue
 // @grant			GM_setValue
 // @grant			GM_xmlhttpRequest
@@ -129,46 +129,50 @@ function steamCommunity() {
 function makeBox(location, number = 0) {
   var iconStyle = "max-height:12px;width:auto;verticle-align:bottom;";
 
+  let offset = $(location).width() + 30;
+
+  var boxCss =
+  "display: block;" +
+  "position: absolute;" +
+  "top: 40px;" +
+  "color:#FFFFFF;" +
+  "background-color: #171a21;" +
+  "border: none;" +
+  "line-height: 10px;" +
+  "font-size: 12px;" +
+  "z-index: 201;" + 
+  "box-shadow: 0 0 12px #000000;" +
+  "padding: 6px;";
+
+
   var boxContent =
-    "<table>" +
-    "<tr>" +
-    "<td>" +
+    '<div class="tf2-spy-box box' +
+    number +
+    '" style="' +
+    boxCss +
+    '">' +
+    '<p>' +
     '<img src="https://raw.githubusercontent.com/scrambl-d/tf2-spy/release/img/etf2l.ico" style="' +
     iconStyle +
     '" /> ' +
     '<span class="etf2lrow">' +
     "Loading..." +
     "</span>" +
-    "</td>" +
-    "</tr>" +
-    "<tr>" +
-    "<td>" +
+    "</p>" +
+    "<p>" +
     '<img src="https://github.com/scrambl-d/tf2-spy/raw/release/img/logstf.png" style="' +
     iconStyle +
     '" /> ' +
     '<span class="logsrow">' +
     "Loading..." +
     "</span>" +
-    "</tr>" +
-    "</td>" +
-    "</table>";
+    '</p>' +
+    "</div>";
 
   var linkCss = "font-size: 12px";
 
-  var boxCss =
-  "display: table;" +
-  "position: absolute;" +
-  "top: 0;" +
-  "left: 30px;" +
-  "color:#FFFFFF;" +
-  "background-color: #121414;" +
-  "border: none;" +
-  "line-height: 10pt;" +
-  "font-size: 12px;" +
-  "z-index: 3;";
-
   var box =
-    '<span class="tf2-spy box' +
+    '<span class="tf2-spy-link box' +
     number +
     '"' +
     'style="position: relative"' +
@@ -182,19 +186,17 @@ function makeBox(location, number = 0) {
     ">" +
     '<img src="https://github.com/scrambl-d/tf2-spy/raw/release/img/spycrab.png" style="max-height:24px;width:auto;verticle-align:bottom;" />' +
     "</a>" +
-    '<div class="tf2-spy-box" style="' +
-    boxCss +
-    '">' +
-    boxContent +
-    "</div></span>";
+    "</span>" +
+    boxContent;
 
   $(location).append(box);
+  $(".box" + number + ".tf2-spy-box").css("left", $(".box" + number + ".tf2-spy-link").position().left);
 
   $(".box" + number + " .tf2-spy-link").on("click", function () {
-    $(".box" + number + " .tf2-spy-box").toggle();
+    $(".box" + number + ".tf2-spy-box").fadeToggle(200);
   });
 
-  $(".box" + number + " .tf2-spy-box").hide();
+  $(".box" + number + ".tf2-spy-box").hide();
 }
 
 function addLogsLink(id, number) {
